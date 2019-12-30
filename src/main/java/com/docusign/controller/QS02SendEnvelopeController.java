@@ -36,17 +36,15 @@ public class QS02SendEnvelopeController {
         // Fill in these constants
         //
         // Obtain an OAuth access token from https://developers.docusign.com/oauth-token-generator
-        String accessToken = "{ACCESS_TOKEN}";
+        String accessToken = "eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwAAN_AFC43XSAgAAHcTFE6N10gCABav7z-7ZfZDlEcmEgktmBMVAAEAAAAYAAEAAAAFAAAADQAkAAAAMzQyZjFiZjgtNTIxNC00OGE0LWE2NjMtMTFiMGQyZTdiOWZiIgAkAAAAMzQyZjFiZjgtNTIxNC00OGE0LWE2NjMtMTFiMGQyZTdiOWZiMAAAN_AFC43XSBIAAQAAAAsAAABpbnRlcmFjdGl2ZQ.f82css31oCZt_Cg-1Appz1DT2nnPwY0vh4Rw6p_uJU8oRG_BFZSDZzlZVyKFy-LVARmmgjXCY-nRh-0GPZnIQWqEm6HKldVdqJ-SZtJ7kCbyul27EsH9YaYidXtIGyJPQRp8cWWU4O2kql0NpQNJvEhSDjeNiaf52LuTd_aBvUyvYjOuqDmjmpmchmME6Tf7wbHlccvhZVPnCP5wQYVcl6pxyxYHna61NitsQxK2Sjfamv2IX2wz8k7gqlZrrJjqAQkctdtIBVb3rY0bgNuwMEUtQjBZfgZ0I6efGZ_kAmhVJdPuH0qLLIloaTs8HFEYozxNY-wLNv55bpXqzgQ6vw";
+        Long tokenExpirationSeconds = 8 * 60 * 60L;
         // Obtain your accountId from demo.docusign.com -- the account id is shown in the drop down on the
         // upper right corner of the screen by your picture or the default picture.
-        String accountId = "{ACCOUNT_ID}";
+        String accountId = "9687112";
         // Recipient Information
-        String signerName = "{USER_FULLNAME}";
-        String signerEmail = "{USER_EMAIL}";
+        String signerName = "sergii.katruk";
+        String signerEmail = "sergii.katruk@sigma.software";
 
-        // The url for this web application
-        String baseUrl = "http://localhost:8080";
-        //
         // The API base path
         String basePath = "https://demo.docusign.net/restapi";
         // The document to be signed. See /qs-java/src/main/resources/World_Wide_Corp_lorem.pdf
@@ -100,10 +98,9 @@ public class QS02SendEnvelopeController {
 
         // Step 2. Call DocuSign to create and send the envelope
         ApiClient apiClient = new ApiClient(basePath);
-        apiClient.addDefaultHeader("Authorization", "Bearer " + accessToken);
+        apiClient.setAccessToken(accessToken, tokenExpirationSeconds);
         EnvelopesApi envelopesApi = new EnvelopesApi(apiClient);
         EnvelopeSummary results = envelopesApi.createEnvelope(accountId, envelopeDefinition);
-        String envelopeId = results.getEnvelopeId();
 
         // Show results
         String title = "Signing Request by Email";
