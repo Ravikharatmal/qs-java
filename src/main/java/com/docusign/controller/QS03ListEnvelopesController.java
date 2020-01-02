@@ -36,11 +36,11 @@ public class QS03ListEnvelopesController {
         // Fill in these constants
         //
         // Obtain an OAuth access token from https://developers.docusign.com/oauth-token-generator
-        String accessToken = "eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwAAoKzvN43XSAgAAODP_XqN10gCABav7z-7ZfZDlEcmEgktmBMVAAEAAAAYAAEAAAAFAAAADQAkAAAAMzQyZjFiZjgtNTIxNC00OGE0LWE2NjMtMTFiMGQyZTdiOWZiIgAkAAAAMzQyZjFiZjgtNTIxNC00OGE0LWE2NjMtMTFiMGQyZTdiOWZiMAAAoKzvN43XSBIAAQAAAAsAAABpbnRlcmFjdGl2ZQ.pRc5_7uhrWgfB3oLtQLGDVi0cqE-FtQmtv7k1V-MRbIYw2Ccws_EBEW3SjdpgoLZXowTpIZfqCY_Pv4wisa4-PoGytd2qiRy90Xl_9JZcexqrdfpDdrDpKnE8ugEFfn_Jnqaw_80_P7MYEQfCvna_hkAByPNyP4iZnw5wC7tMhDIKYPFWOn6bumVqVDLup55j0zr9HwcrdirudDg8akR8JzmDWP_vN6Rwe_mw6h8H4nbCkIlteGYmVh1zT9i8NS7yUUQT1iTU3OtLs5vs2HErrlTCJsx8lSOFaswZsZ9eJ6FyWInPsTinchMs6wH-PTu7iOSRXS7jam_9_zB4h45VQ";
+        String accessToken = "{ACCESS_TOKEN}";
         Long tokenExpirationSeconds = 8 * 60 * 60L;
         // Obtain your accountId from demo.docusign.com -- the account id is shown in the drop down on the
         // upper right corner of the screen by your picture or the default picture.
-        String accountId = "9687112";
+        String accountId = "{ACCOUNT_ID}";
 
         //
         // The API base path
