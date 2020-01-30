@@ -37,6 +37,7 @@ public class QS03ListEnvelopesController {
         //
         // Obtain an OAuth access token from https://developers.docusign.com/oauth-token-generator
         String accessToken = "{ACCESS_TOKEN}";
+        Long tokenExpirationSeconds = 8 * 60 * 60L;
         // Obtain your accountId from demo.docusign.com -- the account id is shown in the drop down on the
         // upper right corner of the screen by your picture or the default picture.
         String accountId = "{ACCOUNT_ID}";
@@ -47,7 +48,7 @@ public class QS03ListEnvelopesController {
 
         // Step 1. Call the API
         ApiClient apiClient = new ApiClient(basePath);
-        apiClient.addDefaultHeader("Authorization", "Bearer " + accessToken);
+        apiClient.setAccessToken(accessToken, tokenExpirationSeconds);
         EnvelopesApi envelopesApi = new EnvelopesApi(apiClient);
         // prepare the request body
         ListStatusChangesOptions options = envelopesApi.new ListStatusChangesOptions();

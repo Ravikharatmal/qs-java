@@ -37,6 +37,7 @@ public class QS02SendEnvelopeController {
         //
         // Obtain an OAuth access token from https://developers.docusign.com/oauth-token-generator
         String accessToken = "{ACCESS_TOKEN}";
+        Long tokenExpirationSeconds = 8 * 60 * 60L;
         // Obtain your accountId from demo.docusign.com -- the account id is shown in the drop down on the
         // upper right corner of the screen by your picture or the default picture.
         String accountId = "{ACCOUNT_ID}";
@@ -44,9 +45,6 @@ public class QS02SendEnvelopeController {
         String signerName = "{USER_FULLNAME}";
         String signerEmail = "{USER_EMAIL}";
 
-        // The url for this web application
-        String baseUrl = "http://localhost:8080";
-        //
         // The API base path
         String basePath = "https://demo.docusign.net/restapi";
         // The document to be signed. See /qs-java/src/main/resources/World_Wide_Corp_lorem.pdf
@@ -100,10 +98,9 @@ public class QS02SendEnvelopeController {
 
         // Step 2. Call DocuSign to create and send the envelope
         ApiClient apiClient = new ApiClient(basePath);
-        apiClient.addDefaultHeader("Authorization", "Bearer " + accessToken);
+        apiClient.setAccessToken(accessToken, tokenExpirationSeconds);
         EnvelopesApi envelopesApi = new EnvelopesApi(apiClient);
         EnvelopeSummary results = envelopesApi.createEnvelope(accountId, envelopeDefinition);
-        String envelopeId = results.getEnvelopeId();
 
         // Show results
         String title = "Signing Request by Email";

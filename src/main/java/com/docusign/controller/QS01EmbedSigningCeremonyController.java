@@ -40,6 +40,7 @@ public class QS01EmbedSigningCeremonyController {
         //
         // Obtain an OAuth access token from https://developers.docusign.com/oauth-token-generator
         String accessToken = "{ACCESS_TOKEN}";
+        Long tokenExpirationSeconds = 8 * 60 * 60L;
         // Obtain your accountId from demo.docusign.com -- the account id is shown in the drop down on the
         // upper right corner of the screen by your picture or the default picture.
         String accountId = "{ACCOUNT_ID}";
@@ -111,7 +112,7 @@ public class QS01EmbedSigningCeremonyController {
 
         // Step 2. Call DocuSign to create and send the envelope
         ApiClient apiClient = new ApiClient(basePath);
-        apiClient.addDefaultHeader("Authorization", "Bearer " + accessToken);
+        apiClient.setAccessToken(accessToken, tokenExpirationSeconds);
         EnvelopesApi envelopesApi = new EnvelopesApi(apiClient);
         EnvelopeSummary results = envelopesApi.createEnvelope(accountId, envelopeDefinition);
         String envelopeId = results.getEnvelopeId();

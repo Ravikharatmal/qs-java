@@ -1,10 +1,8 @@
 package com.docusign;
 
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.boot.context.embedded.ServletContextInitializer;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -16,7 +14,7 @@ import java.util.Set;
 
 @EnableWebMvc
 @Configuration
-public class AppConfig extends WebMvcConfigurerAdapter {
+public class AppConfig implements WebMvcConfigurer {
 
     @Bean
     public ServletContextInitializer servletContextInitializer() {
