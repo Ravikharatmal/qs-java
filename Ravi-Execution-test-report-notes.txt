@@ -1,3 +1,9 @@
+Concepts
+Template = Blue Print PDF with custom text fields, signature boxes etc. Also will have roles assigned about who will sign which box.
+Envelope = Instance created from template with specific recepients to sign. Each envelop will have multiple documents, recepients etc.
+Document = Document inside envelope.
+
+
 Steps:
 Create your own docu sign sandbox account
 Go to https://appdemo.docusign.com/templates & create template by uploading PDF form.
