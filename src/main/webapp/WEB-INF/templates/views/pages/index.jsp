@@ -22,6 +22,14 @@
   <h4 id="example003">3. <a href="qs03">List updated envelopes in the user's account</a></h4>
   <p>List the envelopes created or updated in the last 10 days.
   </p>
+  
+   <h4 id="example003">4. <a href="tu">Send envelop using template</a></h4>
+  <p>Before running this, Go to https://appdemo.docusign.com/templates & create template by uploading PDF form.
+  </p>
+  
+     <h4 id="example003">4. <a href="getdoc">Download signed document/envelop</a></h4>
+  <p>
+  </p>
 
     <div class="alert alert-info" role="alert" style="display:inline-block;">
     For a full set of Java code examples, including OAuth authentication, see the

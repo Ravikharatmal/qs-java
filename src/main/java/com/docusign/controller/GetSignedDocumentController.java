@@ -1,20 +1,27 @@
 package com.docusign.controller;
 
-import com.docusign.esign.api.EnvelopesApi;
-import com.docusign.esign.client.ApiClient;
-import com.docusign.esign.client.ApiException;
-import com.docusign.esign.model.*;
-import com.docusign.esign.api.EnvelopesApi.ListStatusChangesOptions;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.joda.time.LocalDate;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import com.docusign.esign.api.EnvelopesApi;
+import com.docusign.esign.api.TemplatesApi;
+import com.docusign.esign.client.ApiClient;
+import com.docusign.esign.client.ApiException;
+import com.docusign.esign.model.EnvelopeDefinition;
+import com.docusign.esign.model.EnvelopeDocumentsResult;
+import com.docusign.esign.model.EnvelopeSummary;
+import com.docusign.esign.model.EnvelopeTemplateResults;
+import com.docusign.esign.model.Tabs;
+import com.docusign.esign.model.TemplateRole;
+import com.docusign.esign.model.Text;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,9 +35,9 @@ import java.util.Map;
 ///////////////////////////////////////////////////////////////////////////////
 
 @Controller
-public class QS03ListEnvelopesController {
+public class GetSignedDocumentController {
 
-	@RequestMapping(path = "/qs03", method = RequestMethod.POST)
+	@RequestMapping(path = "/getdoc", method = RequestMethod.POST)
 	public Object create(ModelMap model) throws ApiException, IOException {
 		model.addAttribute("title", "Embedded Signing Ceremony");
 
@@ -60,38 +67,34 @@ public class QS03ListEnvelopesController {
 		// Step 1. Call the API
 		ApiClient apiClient = new ApiClient(basePath);
 		apiClient.setAccessToken(accessToken, tokenExpirationSeconds);
-		EnvelopesApi envelopesApi = new EnvelopesApi(apiClient);
-		// prepare the request body
-		ListStatusChangesOptions options = envelopesApi.new ListStatusChangesOptions();
-		LocalDate date = LocalDate.now().minusDays(10);
-		options.setFromDate(date.toString("yyyy/MM/dd"));
-		// call the API
-		EnvelopesInformation results = envelopesApi.listStatusChanges(accountId, options);
-		
-		// Aded by Ravi
-		Map<String, String> envIdToDocId = new HashMap<String, String>();
-		for(Envelope e : results.getEnvelopes()) {
-			EnvelopeDocumentsResult docsResults =envelopesApi.listDocuments(accountId, e.getEnvelopeId());
-			
-			envIdToDocId.put(e.getEnvelopeId(), docsResults.getEnvelopeDocuments().get(0).getDocumentId());
-		}
 
-		JSONObject response = new JSONObject(results);
-		response.append("envelope-id-document-id-map", envIdToDocId);
+		// Step 2. Call DocuSign to create and send the envelope
+		// ApiClient apiClient = new ApiClient(basePath);
+		// apiClient.setAccessToken(accessToken, tokenExpirationSeconds);
+		EnvelopesApi envelopesApi = new EnvelopesApi(apiClient);
+
+		/*
+		 * After signing is done. run get envelop list API & get envelop id & document
+		 * id from that.
+		 */
+		byte[] bytes = envelopesApi.getDocument(accountId, "e268d083-245b-4c45-beff-d90598ec989d", "1");
+		String filePath = "C:\\MSTD\\Codebases\\GIT_CODE\\docusign-poc-qa-java\\Downloaded-signed-document.pdf";
+		File newFile = new File(filePath);
+		FileUtils.writeByteArrayToFile(newFile, bytes);
 
 		// Show results
-		String title = "List Updated Envelopes";
+		String title = "getdoc";
 		model.addAttribute("title", title);
 		model.addAttribute("h1", title);
-		model.addAttribute("message", "Envelopes::listStatusChanges results");
-		model.addAttribute("json", response.toString(4));
+		model.addAttribute("message", "Envelopes::getdoc results - Downloaded. Check " + filePath);
+		model.addAttribute("json", new JSONObject().toString(4));
 		return "pages/example_done";
 	}
 
 	// Handle get request to show the form
-	@RequestMapping(path = "/qs03", method = RequestMethod.GET)
+	@RequestMapping(path = "/getdoc", method = RequestMethod.GET)
 	public String get(ModelMap model) {
-		model.addAttribute("title", "List Updated Envelopes");
-		return "pages/qs03";
+		model.addAttribute("title", "getdoc");
+		return "pages/getdoc";
 	}
 }

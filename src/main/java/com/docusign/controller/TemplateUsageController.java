@@ -1,20 +1,24 @@
 package com.docusign.controller;
 
-import com.docusign.esign.api.EnvelopesApi;
-import com.docusign.esign.client.ApiClient;
-import com.docusign.esign.client.ApiException;
-import com.docusign.esign.model.*;
-import com.docusign.esign.api.EnvelopesApi.ListStatusChangesOptions;
+import java.io.IOException;
+import java.util.Arrays;
+
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.joda.time.LocalDate;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import com.docusign.esign.api.EnvelopesApi;
+import com.docusign.esign.api.TemplatesApi;
+import com.docusign.esign.client.ApiClient;
+import com.docusign.esign.client.ApiException;
+import com.docusign.esign.model.EnvelopeDefinition;
+import com.docusign.esign.model.EnvelopeSummary;
+import com.docusign.esign.model.EnvelopeTemplateResults;
+import com.docusign.esign.model.Tabs;
+import com.docusign.esign.model.TemplateRole;
+import com.docusign.esign.model.Text;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,9 +32,9 @@ import java.util.Map;
 ///////////////////////////////////////////////////////////////////////////////
 
 @Controller
-public class QS03ListEnvelopesController {
+public class TemplateUsageController {
 
-	@RequestMapping(path = "/qs03", method = RequestMethod.POST)
+	@RequestMapping(path = "/tu", method = RequestMethod.POST)
 	public Object create(ModelMap model) throws ApiException, IOException {
 		model.addAttribute("title", "Embedded Signing Ceremony");
 
@@ -60,38 +64,58 @@ public class QS03ListEnvelopesController {
 		// Step 1. Call the API
 		ApiClient apiClient = new ApiClient(basePath);
 		apiClient.setAccessToken(accessToken, tokenExpirationSeconds);
-		EnvelopesApi envelopesApi = new EnvelopesApi(apiClient);
-		// prepare the request body
-		ListStatusChangesOptions options = envelopesApi.new ListStatusChangesOptions();
-		LocalDate date = LocalDate.now().minusDays(10);
-		options.setFromDate(date.toString("yyyy/MM/dd"));
-		// call the API
-		EnvelopesInformation results = envelopesApi.listStatusChanges(accountId, options);
-		
-		// Aded by Ravi
-		Map<String, String> envIdToDocId = new HashMap<String, String>();
-		for(Envelope e : results.getEnvelopes()) {
-			EnvelopeDocumentsResult docsResults =envelopesApi.listDocuments(accountId, e.getEnvelopeId());
-			
-			envIdToDocId.put(e.getEnvelopeId(), docsResults.getEnvelopeDocuments().get(0).getDocumentId());
-		}
 
-		JSONObject response = new JSONObject(results);
-		response.append("envelope-id-document-id-map", envIdToDocId);
+		TemplatesApi templatesApi = new TemplatesApi(apiClient);
+
+		EnvelopeTemplateResults results = templatesApi.listTemplates(accountId);
+		String templateId = results.getEnvelopeTemplates().get(0).getTemplateId();
+
+		EnvelopeDefinition envelopeDefinition = new EnvelopeDefinition();
+		envelopeDefinition.setEmailSubject("Please sign this document");
+		envelopeDefinition.setTemplateId(templateId);
+		envelopeDefinition.setEmailBlurb("Generated using API by Ravi. Please click & verify.");
+		
+		
+		TemplateRole role1 = new TemplateRole();
+		role1.setRoleName("Signer1");
+		role1.setName("RaviSKharatmal");
+		role1.setEmail("ravi.kharatmal@gmail.com");
+		
+		Tabs tabs = new Tabs();
+		Text text = new Text();
+		text.setTabLabel("Business Name");
+		text.setValue("My Coding Business");
+		tabs.setTextTabs(Arrays.asList(text));
+		role1.setTabs(tabs);
+
+		TemplateRole role2 = new TemplateRole();
+		role2.setRoleName("Signer2");
+		role2.setName("Bhanu");
+		role2.setEmail("bhanu.sankaran@wellsfargo.com");
+		role2.setTabs(tabs);
+		envelopeDefinition.setTemplateRoles(Arrays.asList(role1, role2  ));
+		
+		envelopeDefinition.setStatus("sent"); // requests that the envelope be created and sent.
+
+		// Step 2. Call DocuSign to create and send the envelope
+		// ApiClient apiClient = new ApiClient(basePath);
+		// apiClient.setAccessToken(accessToken, tokenExpirationSeconds);
+		EnvelopesApi envelopesApi = new EnvelopesApi(apiClient);
+		EnvelopeSummary resultsEnv = envelopesApi.createEnvelope(accountId, envelopeDefinition);
 
 		// Show results
-		String title = "List Updated Envelopes";
+		String title = "Template usage";
 		model.addAttribute("title", title);
 		model.addAttribute("h1", title);
-		model.addAttribute("message", "Envelopes::listStatusChanges results");
-		model.addAttribute("json", response.toString(4));
+		model.addAttribute("message", "Envelopes::Template usage results");
+		model.addAttribute("json", new JSONObject(resultsEnv).toString(4));
 		return "pages/example_done";
 	}
 
 	// Handle get request to show the form
-	@RequestMapping(path = "/qs03", method = RequestMethod.GET)
+	@RequestMapping(path = "/tu", method = RequestMethod.GET)
 	public String get(ModelMap model) {
-		model.addAttribute("title", "List Updated Envelopes");
-		return "pages/qs03";
+		model.addAttribute("title", "Template usage");
+		return "pages/tu";
 	}
 }

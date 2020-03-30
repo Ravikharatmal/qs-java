@@ -1,0 +1,253 @@
+Steps:
+Create your own docu sign sandbox account
+Go to https://appdemo.docusign.com/templates & create template by uploading PDF form.
+In tempalate, add 2 recepients only with role. Do not give any name or email. Roles to use = Signer1 & Signer2. Also add one text field with Data Label "Business Name". This is refered in code.
+Get account id from https://appdemo.docusign.com/home
+Get temporary 8 hour OAuth token from https://developers.docusign.com/oauth-token-generator
+Go to QS03ListEnvelopesController.java & QS02SendEnvelopeController.java in code & add account id, oauth token & your email id.
+Run program as spring boot application
+Go to http://localhost:8080/
+Click on "List updated envelopes in the user's account" -> This calls get envelopes REST API.
+Submit & then you will get below list envelop response.
+Then go to home & go to "Send an envelope with a remote (email) signer" & submit
+
+Updates to POC
+https://developers.docusign.com/esign-rest-api/guides/features/templates#sending-from-a-template
+TemplateUsageController.java - This will first lookup tempalte, use that template & create & send envelope. This will add 2 recepient email ids as role Signer1 & Signer2.
+
+GetSignedDocumentController.java - First run list envelope which will give map of envelop id to document id. Then put those envelope id & document id in this java class & run again.
+
+List envelope response
+
+{
+    "folders": [],
+    "envelopeTransactionStatuses": [],
+    "endPosition": "0",
+    "totalSetSize": "1",
+    "envelopes": [{
+        "envelopeAttachments": [],
+        "envelopeIdStamping": "true",
+        "envelopeLocation": "not_specified",
+        "folders": [],
+        "lastModifiedDateTime": "2020-03-30T01:33:48.5530000Z",
+        "notificationUri": "/envelopes/8dede1fc-90f8-48e0-ad74-31f077750249/notification",
+        "certificateUri": "/envelopes/8dede1fc-90f8-48e0-ad74-31f077750249/documents/certificate",
+        "autoNavigation": "true",
+        "createdDateTime": "2020-03-30T01:33:12.7630000Z",
+        "allowMarkup": "false",
+        "emailSubject": "Please DocuSign: Form 1920 Fillable.pdf",
+        "statusChangedDateTime": "2020-03-30T01:34:40.5200000Z",
+        "templatesUri": "/envelopes/8dede1fc-90f8-48e0-ad74-31f077750249/templates",
+        "envelopeDocuments": [],
+        "deliveredDateTime": "2020-03-30T01:34:40.5200000Z",
+        "envelopeId": "8dede1fc-90f8-48e0-ad74-31f077750249",
+        "purgeState": "unpurged",
+        "isSignatureProviderEnvelope": "false",
+        "attachmentsUri": "/envelopes/8dede1fc-90f8-48e0-ad74-31f077750249/attachments",
+        "sentDateTime": "2020-03-30T01:33:49.1770000Z",
+        "expireEnabled": "true",
+        "customFieldsUri": "/envelopes/8dede1fc-90f8-48e0-ad74-31f077750249/custom_fields",
+        "documentsUri": "/envelopes/8dede1fc-90f8-48e0-ad74-31f077750249/documents",
+        "expireAfter": "120",
+        "envelopeUri": "/envelopes/8dede1fc-90f8-48e0-ad74-31f077750249",
+        "sender": {
+            "accountId": "8a528c74-66b4-44c7-b1f4-820c7da5bd54",
+            "userName": "Ravi Kharatmal",
+            "userId": "fcd42554-afcf-4ecd-8c63-54931f894b89",
+            "email": "ravi.kharatmal@wellsfargo.com"
+        },
+        "signingLocation": "online",
+        "documentsCombinedUri": "/envelopes/8dede1fc-90f8-48e0-ad74-31f077750249/documents/combined",
+        "recipientsUri": "/envelopes/8dede1fc-90f8-48e0-ad74-31f077750249/recipients",
+        "status": "delivered"
+    }],
+    "startPosition": "0",
+    "resultSetSize": "1",
+    "nextUri": "",
+    "previousUri": ""
+}
+
+
+Signing email response
+
+{
+    "envelopeId": "b65be0bd-46aa-4487-bcf8-0fe5231cb2fd",
+    "statusDateTime": "2020-03-30T03:43:58.9612245Z",
+    "uri": "/envelopes/b65be0bd-46aa-4487-bcf8-0fe5231cb2fd",
+    "status": "sent"
+}
+
+
+
+List templates response
+
+{
+    "envelopeTemplates": [{
+        "shared": "false",
+        "envelopeAttachments": [],
+        "folders": [],
+        "documents": [],
+        "description": "Lender\u2019s Application for Loan Guaranty \nFor all 7(a) Loan Programs",
+        "allowMarkup": "false",
+        "allowReassign": "true",
+        "templateId": "dde2f558-5058-4e39-b9f6-51ef867f4281",
+        "emailSubject": "Please DocuSign: Form 1920 Fillable.pdf",
+        "powerForms": [],
+        "envelopeDocuments": [],
+        "authoritativeCopy": "false",
+        "folderIds": ["21bea999-d243-443c-98c8-72711eaad368"],
+        "disableResponsiveDocument": "true",
+        "owner": {
+            "userName": "Ravi Kharatmal",
+            "userId": "fcd42554-afcf-4ecd-8c63-54931f894b89",
+            "email": "ravi.kharatmal@wellsfargo.com"
+        },
+        "enableWetSign": "true",
+        "emailBlurb": "",
+        "pageCount": "11",
+        "enforceSignerVisibility": "false",
+        "created": "2020-03-30T01:17:59.9700000Z",
+        "autoMatch": "true",
+        "uri": "/templates/dde2f558-5058-4e39-b9f6-51ef867f4281",
+        "folderId": "21bea999-d243-443c-98c8-72711eaad368",
+        "lastUsed": "2020-03-30T01:33:13.7200000Z",
+        "name": "Form_1920",
+        "passwordProtected": "false",
+        "signingLocation": "Online",
+        "lastModified": "2020-03-30T01:32:11.3830000Z",
+        "folderName": "Templates",
+        "autoMatchSpecifiedByUser": "false"
+    }],
+    "folders": [],
+    "endPosition": "0",
+    "totalSetSize": "1",
+    "startPosition": "0",
+    "resultSetSize": "1"
+}
+
+Get documents response
+
+
+{
+    "envelopeDocuments": [
+        {
+            "includeInDownload": "true",
+            "documentIdGuid": "90defe07-9672-48f9-97e6-8e7f2be90ff5",
+            "display": "inline",
+            "type": "content",
+            "uri": "/envelopes/e268d083-245b-4c45-beff-d90598ec989d/documents/1",
+            "templateRequired": "false",
+            "availableDocumentTypes": [{
+                "isDefault": "true",
+                "type": "electronic"
+            }],
+            "pages": [
+                {
+                    "sequence": "1",
+                    "width": "612",
+                    "dpi": "72",
+                    "pageId": "136c417c-f7a3-4d43-a0c9-0bbff1b0d596",
+                    "height": "792"
+                },
+                {
+                    "sequence": "2",
+                    "width": "612",
+                    "dpi": "72",
+                    "pageId": "d1732b95-81eb-455c-b3c8-264e69d3c22d",
+                    "height": "792"
+                },
+                {
+                    "sequence": "3",
+                    "width": "612",
+                    "dpi": "72",
+                    "pageId": "e2b4a183-b96f-484c-8239-51df5069c946",
+                    "height": "792"
+                },
+                {
+                    "sequence": "4",
+                    "width": "612",
+                    "dpi": "72",
+                    "pageId": "d1a1f6d8-205c-4c13-aae6-dce4224debda",
+                    "height": "792"
+                },
+                {
+                    "sequence": "5",
+                    "width": "612",
+                    "dpi": "72",
+                    "pageId": "8202b4b0-6cd0-4aaa-9e85-8a02184ae0d6",
+                    "height": "792"
+                },
+                {
+                    "sequence": "6",
+                    "width": "612",
+                    "dpi": "72",
+                    "pageId": "58c53ebe-8c83-4db6-9bfb-4ffa5bdf8128",
+                    "height": "792"
+                },
+                {
+                    "sequence": "7",
+                    "width": "612",
+                    "dpi": "72",
+                    "pageId": "27953b82-ddbb-40b1-a065-76b4675ca2f3",
+                    "height": "792"
+                },
+                {
+                    "sequence": "8",
+                    "width": "612",
+                    "dpi": "72",
+                    "pageId": "798489d4-33ea-4e48-abc0-ed2a3f68d81f",
+                    "height": "792"
+                },
+                {
+                    "sequence": "9",
+                    "width": "612",
+                    "dpi": "72",
+                    "pageId": "8418f07d-fd7c-4395-b22c-d2b07d54da1a",
+                    "height": "792"
+                },
+                {
+                    "sequence": "10",
+                    "width": "612",
+                    "dpi": "72",
+                    "pageId": "ebba0262-ebf4-433d-9946-4911c44a03c7",
+                    "height": "792"
+                },
+                {
+                    "sequence": "11",
+                    "width": "612",
+                    "dpi": "72",
+                    "pageId": "e055f15b-8a55-44ab-840f-6ffa41a1e5ce",
+                    "height": "792"
+                }
+            ],
+            "signerMustAcknowledge": "no_interaction",
+            "name": "Form 1920 Fillable.pdf",
+            "authoritativeCopy": "false",
+            "documentFields": [],
+            "addedRecipientIds": [],
+            "documentId": "1",
+            "order": "1"
+        },
+        {
+            "includeInDownload": "true",
+            "documentIdGuid": "4177cac6-f6fb-484b-8c4a-9c192616bfc5",
+            "display": "inline",
+            "type": "summary",
+            "uri": "/envelopes/e268d083-245b-4c45-beff-d90598ec989d/documents/certificate",
+            "templateRequired": "false",
+            "availableDocumentTypes": [{
+                "isDefault": "true",
+                "type": "electronic"
+            }],
+            "pages": [],
+            "signerMustAcknowledge": "no_interaction",
+            "name": "Summary",
+            "authoritativeCopy": "false",
+            "documentFields": [],
+            "addedRecipientIds": [],
+            "documentId": "certificate",
+            "order": "999"
+        }
+    ],
+    "envelopeId": "e268d083-245b-4c45-beff-d90598ec989d"
+}
